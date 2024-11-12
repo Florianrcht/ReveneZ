@@ -40,6 +40,8 @@ public class PlayerHealth : MonoBehaviour
         {
             StartCoroutine(InvincibilityCooldown());
         }
+
+        Debug.Log(currentHealth);
     }
 
     /// <summary>

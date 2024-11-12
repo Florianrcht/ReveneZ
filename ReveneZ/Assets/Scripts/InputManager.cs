@@ -7,6 +7,8 @@ public class InputManager : MonoBehaviour
 {
     private PlayerInput playerInput;
     private PlayerLook look;
+    private WeaponManager weaponManager;
+
     private PlayerInput.OnFootActions onFoot;
 
     private PlayerMotor motor;
@@ -18,11 +20,22 @@ public class InputManager : MonoBehaviour
 
         motor = GetComponent<PlayerMotor>();
         look = GetComponent<PlayerLook>();
+        weaponManager = GetComponent<WeaponManager>();
+
+        if (weaponManager == null)
+        {
+            Debug.LogError("WeaponManager is not assigned on " + gameObject.name);
+        }
 
         onFoot.Jump.performed += ctx => motor.Jump();
         onFoot.Crouch.performed += ctx => motor.Crouch();
         onFoot.Sprint.performed += ctx => motor.Sprint();
+        
+        onFoot.Shoot.started += ctx => weaponManager.StartShooting();
+        onFoot.Shoot.canceled += ctx => weaponManager.StopShooting();
+
     }
+
 
     // Update is called once per frame
     void FixedUpdate()
