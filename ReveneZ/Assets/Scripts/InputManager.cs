@@ -12,9 +12,17 @@ public class InputManager : MonoBehaviour
     private PlayerInput.OnFootActions onFoot;
 
     private PlayerMotor motor;
+    [SerializeField] private bool lockCursor = true;
+
     // Start is called before the first frame update
     void Awake()
     {
+        if(lockCursor)
+        {
+            Cursor.lockState = CursorLockMode.Locked; // Correction de la faute de frappe
+            Cursor.visible = false; // Masquer le curseur en mode verrouillé
+        }
+
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
 
