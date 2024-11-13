@@ -1,13 +1,9 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:ReveneZ/Assets/Versatile Studio Assets/Demo City By Versatile Studio/Textures/props_main.png.meta
-guid: cf12b928bc9bd7c4f9c2c809047de444
-========
 guid: 17103bec7cc53614483fa8b782e01866
->>>>>>>> character:ReveneZ/Assets/LowPolyWeapons_LITE/Texture/WeaponsLite_Texture_01.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 11
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -36,21 +32,12 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-<<<<<<<< HEAD:ReveneZ/Assets/Versatile Studio Assets/Demo City By Versatile Studio/Textures/props_main.png.meta
-    filterMode: 1
-    aniso: 1
-    mipBias: 0
-    wrapU: 0
-    wrapV: 0
-    wrapW: 0
-========
     filterMode: -1
     aniso: -1
     mipBias: -100
     wrapU: -1
     wrapV: -1
     wrapW: -1
->>>>>>>> character:ReveneZ/Assets/LowPolyWeapons_LITE/Texture/WeaponsLite_Texture_01.png.meta
   nPOTScale: 1
   lightmap: 0
   compressionQuality: 50
@@ -75,18 +62,13 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
-  cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
-<<<<<<<< HEAD:ReveneZ/Assets/Versatile Studio Assets/Demo City By Versatile Studio/Textures/props_main.png.meta
-    textureCompression: 1
-========
     textureCompression: 2
->>>>>>>> character:ReveneZ/Assets/LowPolyWeapons_LITE/Texture/WeaponsLite_Texture_01.png.meta
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -98,35 +80,7 @@ TextureImporter:
     maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
-<<<<<<<< HEAD:ReveneZ/Assets/Versatile Studio Assets/Demo City By Versatile Studio/Textures/props_main.png.meta
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: Server
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-========
     textureCompression: 2
->>>>>>>> character:ReveneZ/Assets/LowPolyWeapons_LITE/Texture/WeaponsLite_Texture_01.png.meta
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
