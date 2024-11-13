@@ -80,6 +80,7 @@ public class Zombie : MonoBehaviour
 
     private void FleePlayer()
     {
+        
         // Le zombie fuit dans la direction opposée du joueur
         Vector3 directionAwayFromPlayer = transform.position - player.position;
         Vector3 fleeDestination = transform.position + directionAwayFromPlayer;
@@ -94,8 +95,6 @@ public class Zombie : MonoBehaviour
         if (!alreadyAttacked)
         {
             alreadyAttacked = true;
-            Debug.Log("Zombie attaque le joueur");
-
             // Implémenter la logique d'attaque (par exemple, infliger des dégâts au joueur)
             player.GetComponent<PlayerHealth>().TakeDamage(damage);
 
