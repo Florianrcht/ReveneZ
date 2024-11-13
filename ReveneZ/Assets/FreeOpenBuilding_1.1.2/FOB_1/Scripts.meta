@@ -1,9 +1,15 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:ReveneZ/Assets/FreeOpenBuilding_1.1.2/FOB_1/Scripts.meta
 guid: cb6a705a243605443b8b71e65d6368dd
 folderAsset: yes
 timeCreated: 1624493827
 licenseType: Store
+========
+guid: 4b25c2505dcf04fa9bb7a0d5037fdb01
+folderAsset: yes
+>>>>>>>> character:ReveneZ/Assets/Scripts.meta
 DefaultImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
