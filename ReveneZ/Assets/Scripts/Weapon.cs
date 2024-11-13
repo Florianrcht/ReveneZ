@@ -67,6 +67,8 @@ public class Weapon : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, range))
             {
+                Debug.Log("Hit object: " + hit.transform.name);  // Affiche le nom de l'objet touché
+                
                 Zombie target = hit.transform.GetComponent<Zombie>();
                 if (target != null)
                 {
