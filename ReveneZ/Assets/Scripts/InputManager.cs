@@ -34,6 +34,8 @@ public class InputManager : MonoBehaviour
         onFoot.Shoot.started += ctx => weaponManager.StartShooting();
         onFoot.Shoot.canceled += ctx => weaponManager.StopShooting();
 
+        onFoot.SwitchWeapons.performed += ctx => weaponManager.Switch();
+
     }
 
 

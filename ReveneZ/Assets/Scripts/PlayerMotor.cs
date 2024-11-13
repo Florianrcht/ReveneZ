@@ -23,6 +23,7 @@ public class PlayerMotor : MonoBehaviour
     // Vitesse pour marcher et sprinter
     private const float walkSpeed = 5f;
     private const float sprintSpeed = 8f;
+    private const float crouchSpeed = 2.5f;
 
     void Start()
     {
@@ -58,6 +59,7 @@ public class PlayerMotor : MonoBehaviour
     {
         // Alterne entre accroupi et debout
         crouching = !crouching;
+        speed = crouching ? crouchSpeed : walkSpeed;
         crouchTimer = 0f;
         lerpCrouch = true; // Commence l'animation d'accroupissement
     }

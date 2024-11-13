@@ -3,30 +3,13 @@ using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
-    public Transform weaponHolder;
-    public GameObject equippedWeapon;
-
+    public Transform weaponHolder; // Contient les armes
+    private Weapon currentWeapon; // Référence au script Weapon de l'arme équipée
     private bool isShooting = false;
-
-    public void EquipWeapon(GameObject newWeapon)
-    {
-        if (newWeapon == null)
-        {
-            Debug.LogError("Tried to equip a null weapon.");
-            return;
-        }
-
-        if (equippedWeapon != null)
-        {
-            Destroy(equippedWeapon);
-        }
-
-        equippedWeapon = Instantiate(newWeapon, weaponHolder);
-    }
 
     public void StartShooting()
     {
-        if (equippedWeapon == null)
+        if (currentWeapon == null)
         {
             Debug.LogWarning("No weapon equipped, cannot shoot.");
             return;
@@ -48,18 +31,36 @@ public class WeaponManager : MonoBehaviour
     {
         while (isShooting)
         {
-            Weapon weapon = equippedWeapon.GetComponent<Weapon>();
-            if (weapon != null)
+            if (currentWeapon != null)
             {
-                float timeBetweenShots = 1f / weapon.fireRate; // Calcule l'intervalle entre les tirs
-                weapon.Fire();
-                yield return new WaitForSeconds(timeBetweenShots); // Attente avant le prochain tir
+                float timeBetweenShots = 1f / currentWeapon.fireRate;
+                currentWeapon.Fire();
+                yield return new WaitForSeconds(timeBetweenShots);
             }
             else
             {
-                Debug.LogError("Equipped weapon does not have a Weapon component.");
+                Debug.LogError("Current weapon is not assigned or does not have a Weapon component.");
                 break;
             }
+        }
+    }
+
+    public void UpdateCurrentWeapon(Weapon newWeapon)
+    {
+        currentWeapon = newWeapon;
+
+        if (currentWeapon == null)
+        {
+            Debug.LogWarning("Current weapon is null after switch.");
+        }
+    }
+
+    public void Switch()
+    {
+        WeaponSwitching weaponSwitching = GetComponentInChildren<WeaponSwitching>();
+        if (weaponSwitching != null)
+        {
+            weaponSwitching.SwitchWeapon();
         }
     }
 }
