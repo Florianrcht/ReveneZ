@@ -101,4 +101,14 @@ public class Weapon : MonoBehaviour
         currentAmmo = magazineSize; // Remet à jour le chargeur
         isReloading = false;
     }
+
+    public void CancelReload()
+    {
+        if (isReloading)
+        {
+            StopCoroutine(Reload());
+            isReloading = false;
+            transform.rotation = Quaternion.Euler(initialRotation); // Réinitialiser la rotation
+        }
+    }
 }

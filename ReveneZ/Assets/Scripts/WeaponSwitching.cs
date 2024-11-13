@@ -27,6 +27,17 @@ public class WeaponSwitching : MonoBehaviour
         foreach (Transform weapon in transform)
         {
             bool isActive = index == selectedWeaponIndex;
+
+            // Arrêter le rechargement de l'arme avant de la désactiver
+            if (!isActive)
+            {
+                Weapon weaponComponent = weapon.GetComponent<Weapon>();
+                if (weaponComponent != null)
+                {
+                    weaponComponent.CancelReload();
+                }
+            }
+
             weapon.gameObject.SetActive(isActive);
 
             if (isActive && weaponManager != null)
@@ -38,4 +49,5 @@ public class WeaponSwitching : MonoBehaviour
             index++;
         }
     }
+
 }
