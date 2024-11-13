@@ -11080,7 +11080,7 @@ GameObject:
   - component: {fileID: 4381130184628234206}
   - component: {fileID: 8194555633546951061}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Character
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11190,6 +11190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20326991c4b1f42a3af40e557ce4818e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lockCursor: 1
 --- !u!114 &1193005439956660859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11261,6 +11262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20326991c4b1f42a3af40e557ce4818e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lockCursor: 1
 --- !u!114 &523201379126623937
 MonoBehaviour:
   m_ObjectHideFlags: 0

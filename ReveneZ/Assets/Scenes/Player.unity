@@ -292,6 +292,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!195 &247498508 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 5865239885748500599, guid: c29b6417b2a9744fe8e5c986177b82e1, type: 3}
+  m_PrefabInstance: {fileID: 3554318238807725291}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &545459188 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7819233836052671071, guid: a07d0986000da4bb1befe0274895be4b, type: 3}
@@ -616,9 +621,25 @@ PrefabInstance:
       value: Zombie
       objectReference: {fileID: 0}
     - target: {fileID: 1971009951744806360, guid: c29b6417b2a9744fe8e5c986177b82e1, type: 3}
+      propertyPath: agent
+      value: 
+      objectReference: {fileID: 247498508}
+    - target: {fileID: 1971009951744806360, guid: c29b6417b2a9744fe8e5c986177b82e1, type: 3}
+      propertyPath: damage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1971009951744806360, guid: c29b6417b2a9744fe8e5c986177b82e1, type: 3}
+      propertyPath: health
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1971009951744806360, guid: c29b6417b2a9744fe8e5c986177b82e1, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 545459188}
+    - target: {fileID: 1971009951744806360, guid: c29b6417b2a9744fe8e5c986177b82e1, type: 3}
+      propertyPath: timeBetweenAttacks
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 3842241016280138701, guid: c29b6417b2a9744fe8e5c986177b82e1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.02
@@ -672,6 +693,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5786097810451525583, guid: a07d0986000da4bb1befe0274895be4b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7591116270698567549, guid: a07d0986000da4bb1befe0274895be4b, type: 3}
       propertyPath: m_Name
       value: Player
