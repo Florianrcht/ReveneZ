@@ -32,6 +32,8 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth -= damage;
 
+        Debug.Log("Health: " + currentHealth);
+
         if (currentHealth <= 0)
         {
             Die();
@@ -40,8 +42,6 @@ public class PlayerHealth : MonoBehaviour
         {
             StartCoroutine(InvincibilityCooldown());
         }
-
-        Debug.Log(currentHealth);
     }
 
     /// <summary>

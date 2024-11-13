@@ -44,13 +44,11 @@ public class Weapon : MonoBehaviour
     {
         if (isReloading)
         {
-            Debug.Log("Cannot fire while reloading.");
             return;
         }
 
         if (currentAmmo <= 0 && !isMelee)
         {
-            Debug.Log("Out of ammo! Reloading...");
             StartCoroutine(Reload());
             return;
         }
@@ -60,15 +58,12 @@ public class Weapon : MonoBehaviour
             nextTimeToFire = Time.time + 1f / fireRate;
 
             if(!isMelee) currentAmmo--; // Consomme une balle
-            Debug.Log("Ammo remaining: " + currentAmmo);
 
             if (muzzleFlash != null) muzzleFlash.Play();
 
             RaycastHit hit;
             if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, range))
-            {
-                Debug.Log("Hit object: " + hit.transform.name);  // Affiche le nom de l'objet touché
-                
+            {                
                 Zombie target = hit.transform.GetComponent<Zombie>();
                 if (target != null)
                 {
@@ -89,7 +84,6 @@ public class Weapon : MonoBehaviour
     private IEnumerator Reload()
     {
         isReloading = true;
-        Debug.Log("Reloading...");
 
         // Enregistrer la rotation initiale de l'arme
         initialRotation = transform.rotation.eulerAngles;
@@ -103,9 +97,8 @@ public class Weapon : MonoBehaviour
         }
 
         // Remet l'arme à sa position initiale après le rechargement
-        transform.rotation = Quaternion.Euler(initialRotation); // Retour à la position initiale
+        transform.Rotate(0f, 0f, reloadRotationSpeed);
         currentAmmo = magazineSize; // Remet à jour le chargeur
         isReloading = false;
-        Debug.Log("Reload complete. Ammo refilled: " + currentAmmo);
     }
 }

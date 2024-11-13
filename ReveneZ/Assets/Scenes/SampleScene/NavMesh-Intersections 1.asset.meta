@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:ReveneZ/Assets/Scenes/SampleScene/NavMesh-Intersections 1.asset.meta
 guid: 54e5c1323a574492c8dae5e081dbe3ff
+========
+guid: 65bcb830bddbf418294b2e1537241a3e
+>>>>>>>> character:ReveneZ/Assets/Scenes/Player/NavMesh-Cube.asset.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 23800000

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:ReveneZ/Assets/ModularFirstPersonController.meta
 guid: 20cf34e11f7a4415e9c66f88daf15f03
+========
+guid: 5ceceef4ec27043fb8684a21471e3135
+>>>>>>>> character:ReveneZ/Assets/Scenes/Player.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
