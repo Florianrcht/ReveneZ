@@ -7,7 +7,7 @@ public class Zombie : MonoBehaviour
     public float speed = 5f;
     public float damage = 10f;
 
-    public static int fear = -10;
+    public static int fear = 50;
 
     public NavMeshAgent agent;
     public Transform player;
@@ -19,11 +19,15 @@ public class Zombie : MonoBehaviour
 
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
+    private bool playerHasBeenInSightRange = false;
 
     public float updatePathInterval = 0.5f; // Temps entre les mises à jour des chemins
     private float pathUpdateTimer = 0f; // Minuteur pour les mises à jour
 
     public BaseHealth baseGO;
+
+    private Vector3 closestBasePosition; // Nouvelle variable pour stocker la position la plus proche
+    private bool pathToBaseHasBeenSet = false;
 
     private void Awake()
     {
@@ -33,6 +37,20 @@ public class Zombie : MonoBehaviour
         originalSpeed = agent.speed;
         Debug.Log("Zombie fear" + fear);
         baseGO = FindObjectOfType<BaseHealth>();
+    }
+
+    private void Start()
+    {
+        // Calculer la position de la base la plus proche dès le début
+        Vector3[] basePositions = new Vector3[]
+        {
+            new Vector3(427.95f, 0f, 416.31f), // Bas 1
+            new Vector3(413.63f, 0f, 416.31f), // Bas 2
+            new Vector3(413.63f, 0f, 397.58f), // Bas 3
+            new Vector3(427.95f, 0f, 397.58f)  // Bas 4
+        };
+
+        closestBasePosition = GetClosestPositionOnBase(basePositions);
     }
 
     private void Update()
@@ -67,11 +85,33 @@ public class Zombie : MonoBehaviour
 
             pathUpdateTimer = 0f; // Réinitialiser le minuteur
         }
+
+        // Si le joueur quitte la portée de vision, recalculer la trajectoire vers la base
+        if (playerInSightRange && !playerHasBeenInSightRange)
+        {
+            playerHasBeenInSightRange = true;
+        }
+
+        if (!playerInSightRange && playerHasBeenInSightRange)
+        {
+            // Calculer à nouveau la trajectoire vers la base la plus proche
+            closestBasePosition = GetClosestPositionOnBase(new Vector3[]
+            {
+                new Vector3(427.95f, 0f, 416.31f),
+                new Vector3(413.63f, 0f, 416.31f),
+                new Vector3(413.63f, 0f, 397.58f),
+                new Vector3(427.95f, 0f, 397.58f)
+            });
+
+            // Réinitialiser le statut
+            playerHasBeenInSightRange = false;
+            pathToBaseHasBeenSet = false;
+        }
     }
 
     private void AttackBase()
     {
-        // Liste des positions "faces" de la base (2D, sans tenir compte de la hauteur)
+        // Vérification si le zombie est à portée d'attaque du carré formé par les 4 coins
         Vector3[] basePositions = new Vector3[]
         {
             new Vector3(427.95f, 0f, 416.31f), // Bas 1
@@ -80,74 +120,66 @@ public class Zombie : MonoBehaviour
             new Vector3(427.95f, 0f, 397.58f)  // Bas 4
         };
 
-        // Vérification si le zombie est à portée d'attaque du carré formé par les 4 coins
+        // Vérifier si le zombie est dans la portée d'attaque
         if (IsWithinAttackRange(basePositions))
         {
-            // Si à portée d'attaque, infliger des dégâts à la base
             if (!alreadyAttacked)
             {
                 alreadyAttacked = true;
-                // Infliger des dégâts à la base via le composant BaseHealth
                 if (baseGO != null)
                 {
-                    baseGO.TakeDamage(damage); // Inflige des dégâts à la base
+                    baseGO.TakeDamage(damage);
                 }
-                Invoke(nameof(ResetAttack), timeBetweenAttacks); // Réinitialise l'attaque après un délai
+                Invoke(nameof(ResetAttack), timeBetweenAttacks);
             }
         }
         else
         {
-            // Si pas encore à portée, se diriger vers la position la plus proche du carré
-            Vector3 closestBasePosition = GetClosestPositionOnBase(basePositions);
-            agent.SetDestination(closestBasePosition);
+            // Vérifier si le zombie est déjà proche de la destination avant de redéfinir la destination
+            if (!pathToBaseHasBeenSet)
+            {
+                agent.SetDestination(closestBasePosition);
+                pathToBaseHasBeenSet = true;
+            }
         }
     }
 
-    // Vérifie si le zombie est à portée de l'une des faces de la base (rectangle 2D)
+    // Vérifie si le zombie est à portée de l'une des faces de la base
     private bool IsWithinAttackRange(Vector3[] basePositions)
     {
-        // Calcule la distance minimale entre le zombie et les bords du carré (défini par les 4 coins)
         for (int i = 0; i < basePositions.Length; i++)
         {
             Vector3 point1 = basePositions[i];
-            Vector3 point2 = basePositions[(i + 1) % basePositions.Length]; // Le prochain point, avec wrap-around
+            Vector3 point2 = basePositions[(i + 1) % basePositions.Length];
 
-            // Vérifie si la distance entre le zombie et le segment de ligne est inférieure à la portée d'attaque
             if (DistanceToLineSegment(transform.position, point1, point2) <= attackRange)
             {
-                return true; // Si à portée de l'un des bords
+                return true;
             }
         }
-        return false; // Si aucun des bords n'est dans la portée
+        return false;
     }
 
-    // Calcule la distance entre un point et un segment de ligne (entre deux points)
+    // Calcule la distance entre un point et un segment de ligne
     private float DistanceToLineSegment(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
     {
-        // Projette le point sur la ligne
         Vector3 lineDirection = lineEnd - lineStart;
         float lineLength = lineDirection.magnitude;
         lineDirection.Normalize();
-        
-        // Trouver la projection du point sur le segment
-        float projection = Vector3.Dot(point - lineStart, lineDirection);
-        projection = Mathf.Clamp(projection, 0f, lineLength); // Clamping pour être dans la plage du segment
 
-        // Trouver la position projetée sur la ligne
+        float projection = Vector3.Dot(point - lineStart, lineDirection);
+        projection = Mathf.Clamp(projection, 0f, lineLength);
+
         Vector3 projectedPoint = lineStart + lineDirection * projection;
-        
-        // Retourner la distance entre le point projeté et le point initial
         return Vector3.Distance(point, projectedPoint);
     }
 
-    // Obtient la position la plus proche parmi les 4 coins de la base (2D)
+    // Obtient la position la plus proche parmi les 4 coins de la base
     private Vector3 GetClosestPositionOnBase(Vector3[] basePositions)
     {
-        // Initialiser la distance minimale et la position de la face la plus proche
         float minDistance = Mathf.Infinity;
         Vector3 closestBasePosition = Vector3.zero;
 
-        // Trouver le coin le plus proche
         foreach (var basePos in basePositions)
         {
             float distance = Vector3.Distance(transform.position, basePos);
@@ -160,11 +192,9 @@ public class Zombie : MonoBehaviour
         return closestBasePosition;
     }
 
-
-
     private void ChasePlayer()
     {
-        if (Vector3.Distance(agent.destination, player.position) > 1f) // Met à jour seulement si nécessaire
+        if (Vector3.Distance(agent.destination, player.position) > 1f)
         {
             agent.SetDestination(player.position);
         }
@@ -176,7 +206,7 @@ public class Zombie : MonoBehaviour
         Vector3 directionAwayFromPlayer = transform.position - player.position;
         Vector3 fleeDestination = transform.position + directionAwayFromPlayer;
 
-        if (Vector3.Distance(agent.destination, fleeDestination) > 1f) // Met à jour seulement si nécessaire
+        if (Vector3.Distance(agent.destination, fleeDestination) > 1f)
         {
             agent.SetDestination(fleeDestination);
         }
@@ -187,13 +217,10 @@ public class Zombie : MonoBehaviour
     {
         if (!alreadyAttacked)
         {
-            agent.SetDestination(transform.position); // Arrête le mouvement
+            agent.SetDestination(transform.position);
             alreadyAttacked = true;
 
-            // Infliger des dégâts au joueur
             player.GetComponent<PlayerHealth>().TakeDamage(damage);
-
-            // Réinitialiser l'attaque après un délai
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
@@ -217,21 +244,18 @@ public class Zombie : MonoBehaviour
         Drop();
         Destroy(gameObject);
 
-        // Informer le GameManager qu'un zombie est mort
         FindObjectOfType<GameManager>().OnZombieKilled();
     }
 
     private void Drop()
     {
-        // Définir les probabilités des différentes tranches
-        int[] probabilities = { 40, 30, 20, 7, 3 }; // Probabilités pour les tranches
-        int[] ranges = { 10, 20, 30, 40, 50 }; // Maximum pour chaque tranche
+        int[] probabilities = { 40, 30, 20, 7, 3 };
+        int[] ranges = { 10, 20, 30, 40, 50 };
 
         int selectedRange = 0;
         int cumulativeProbability = 0;
-        int randomValue = Random.Range(0, 100); // Random entre 0 et 99
+        int randomValue = Random.Range(0, 100);
 
-        // Déterminer la tranche
         for (int i = 0; i < probabilities.Length; i++)
         {
             cumulativeProbability += probabilities[i];
@@ -242,10 +266,7 @@ public class Zombie : MonoBehaviour
             }
         }
 
-        // Déterminer le montant dans la tranche
-        int dropAmount = Random.Range(selectedRange - 9, selectedRange + 1);
-
-        // Ajouter l'argent au joueur
-        player.GetComponent<PlayerEconomy>().AddMoney(dropAmount);
+        // Placeholder pour la logique de drop (à adapter)
+        Debug.Log($"Zombie dropped {selectedRange} items");
     }
 }
