@@ -7,6 +7,11 @@ public class WeaponManager : MonoBehaviour
     private Weapon currentWeapon; // Référence au script Weapon de l'arme équipée
     private bool isShooting = false;
 
+    public Weapon GetCurrentWeapon()
+    {
+        return currentWeapon;
+    }
+
     public void StartShooting()
     {
         if (currentWeapon == null)

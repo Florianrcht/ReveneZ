@@ -38,6 +38,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public bool GetIsWaveActive()
+    {
+        return isWaveActive;
+    }
+
+    public int GetZombiesRemaining()
+    {
+        return zombiesRemaining;
+    }
+
     /// <summary>
     /// Démarre une nouvelle manche.
     /// </summary>
@@ -100,69 +110,26 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                i--; // Réessayer avec un autre point
+                // Si ce point est plein, on en choisit un autre
+                i--;
             }
         }
     }
 
-    /// <summary>
-    /// Fait apparaître un zombie à un point de spawn donné.
-    /// </summary>
-    private void SpawnZombieAtSpawnPoint(Vector3 spawnLocation)
+    private void SpawnZombieAtSpawnPoint(Vector3 spawnPosition)
     {
-        Vector3 randomOffset = new Vector3(
-            Random.Range(-3f, 3f),
-            0,
-            Random.Range(-3f, 3f)
-        );
-
-        Vector3 potentialSpawnLocation = spawnLocation + randomOffset;
-
-        // Vérifie si la position est valide sur le NavMesh
-        if (UnityEngine.AI.NavMesh.SamplePosition(potentialSpawnLocation, out UnityEngine.AI.NavMeshHit hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
-        {
-            // Force la position avec une hauteur fixe
-            Vector3 spawnPosition = new Vector3(hit.position.x, 5f, hit.position.z);
-
-            // Crée le zombie
-            GameObject newZombie = Instantiate(zombiePrefab, spawnPosition, Quaternion.identity);
-
-            // Fixer la position avec la hauteur à 5
-            newZombie.transform.position = spawnPosition;
-
-            // Configurer les propriétés du zombie
-            Zombie zombie = newZombie.GetComponent<Zombie>();
-            zombie.health *= zombieStatMultiplier;
-            zombie.damage *= zombieStatMultiplier;
-            zombie.player = player;
-        }
-        else
-        {
-            Debug.LogWarning($"No valid NavMesh position near spawn point: {spawnLocation}");
-        }
+        Instantiate(zombiePrefab, spawnPosition, Quaternion.identity);
     }
 
-    /// <summary>
-    /// Appelé lorsqu'un zombie est tué.
-    /// </summary>
-    public void OnZombieKilled()
-    {
-        zombiesRemaining--;
-
-        if (zombiesRemaining <= 0 && isWaveActive)
-        {
-            Debug.Log($"Wave {waveCounter} completed!");
-        }
-    }
-
-    /// <summary>
-    /// Lance la prochaine manche après un délai.
-    /// </summary>
     private IEnumerator StartNextWaveAfterDelay()
     {
         isWaitingForNextWave = true;
-        Debug.Log("Preparing the next wave...");
         yield return new WaitForSeconds(timeBetweenWaves);
         StartNewWave();
+    }
+
+    public void OnZombieKilled()
+    {
+        zombiesRemaining--;
     }
 }
