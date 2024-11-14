@@ -12,6 +12,7 @@ public class InputManager : MonoBehaviour
     private PlayerInput.OnFootActions onFoot;
 
     private PlayerMotor motor;
+
     [SerializeField] private bool lockCursor = true;
 
     // Start is called before the first frame update

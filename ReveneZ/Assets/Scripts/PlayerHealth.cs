@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -66,10 +67,7 @@ public class PlayerHealth : MonoBehaviour
 
         // Désactiver le personnage
         gameObject.SetActive(false);
-
-        // Déclencher une fin de partie
-        FindObjectOfType<GameManager>().enabled = false;
-        Debug.Log("Game Over !");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     /// <summary>
