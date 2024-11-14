@@ -111,8 +111,8 @@ public class GameManager : MonoBehaviour
     private void SpawnZombieAtSpawnPoint(Vector3 spawnLocation)
     {
         Vector3 randomOffset = new Vector3(
-            Random.Range(-3f, 3f), 
-            0, 
+            Random.Range(-3f, 3f),
+            0,
             Random.Range(-3f, 3f)
         );
 
@@ -121,17 +121,31 @@ public class GameManager : MonoBehaviour
         // Vérifie si la position est valide sur le NavMesh
         if (UnityEngine.AI.NavMesh.SamplePosition(potentialSpawnLocation, out UnityEngine.AI.NavMeshHit hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
         {
-            // Crée le zombie
-            GameObject newZombie = Instantiate(zombiePrefab, hit.position, Quaternion.identity);
+            // Force la position avec une hauteur fixe
+            Vector3 spawnPosition = new Vector3(hit.position.x, 5f, hit.position.z);
 
-            // Applique les stats avec le multiplicateur
+            // Crée le zombie
+            GameObject newZombie = Instantiate(zombiePrefab, spawnPosition, Quaternion.identity);
+
+            // Désactiver temporairement NavMeshAgent et Rigidbody (si présents)
+            var navAgent = newZombie.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            Rigidbody rb = newZombie.GetComponent<Rigidbody>();
+
+            if (navAgent != null) navAgent.enabled = false;
+            if (rb != null) rb.isKinematic = true;
+
+            // Fixer la position avec la hauteur à 5
+            newZombie.transform.position = spawnPosition;
+
+            // Réactiver NavMeshAgent et Rigidbody
+            if (navAgent != null) navAgent.enabled = true;
+            if (rb != null) rb.isKinematic = false;
+
+            // Configurer les propriétés du zombie
             Zombie zombie = newZombie.GetComponent<Zombie>();
             zombie.health *= zombieStatMultiplier;
             zombie.damage *= zombieStatMultiplier;
-
-            // Connecte le zombie au joueur
             zombie.player = player;
-            zombie.GetComponent<UnityEngine.AI.NavMeshAgent>().speed *= zombieStatMultiplier;
         }
         else
         {

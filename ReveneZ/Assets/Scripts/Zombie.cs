@@ -6,11 +6,13 @@ public class Zombie : MonoBehaviour
     public float health = 50f;
     public float speed = 5f;
     public float damage = 10f;
+    public float baseDamage = 10f; // Dégâts infligés à la base par le zombie
 
-    public static int fear = 0;
+    public static int fear = -10;
 
     public NavMeshAgent agent;
     public Transform player;
+    public BaseHealth baseHealth; // Référence au script BaseHealth
 
     private float originalSpeed;
 
@@ -20,84 +22,121 @@ public class Zombie : MonoBehaviour
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
+    public float updatePathInterval = 0.5f; // Temps entre les mises à jour des chemins
+    private float pathUpdateTimer = 0f; // Minuteur pour les mises à jour
+
+
     private void Awake()
     {
         gameObject.tag = "Zombie"; // Ajout d'un tag
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         originalSpeed = agent.speed;
+        Debug.Log("Zombie fear" + fear);
     }
 
     private void Update()
     {
-        // Vérification de la distance du joueur
-        float distance = Vector3.Distance(transform.position, player.position);
+        pathUpdateTimer += Time.deltaTime;
 
+        float distance = Vector3.Distance(transform.position, player.position);
         playerInSightRange = distance <= sightRange;
         playerInAttackRange = distance <= attackRange;
 
-        // Comportement du zombie en fonction de la peur
-        if (!playerInSightRange && !playerInAttackRange) 
+        if (pathUpdateTimer >= updatePathInterval)
         {
-            AttackBase(); // Retour à la base s'il ne voit pas le joueur
-        }
-
-        if (playerInSightRange && !playerInAttackRange) 
-        {
-            if (fear > 50) 
+            if (!playerInSightRange && !playerInAttackRange)
             {
-                FleePlayer(); // Si la peur est grande, le zombie fuit
+                AttackBase();
             }
-            else 
+            else if (playerInSightRange && !playerInAttackRange)
             {
-                ChasePlayer(); // Sinon, il poursuit le joueur
+                if (fear > 50)
+                {
+                    FleePlayer();
+                }
+                else
+                {
+                    ChasePlayer();
+                }
             }
-        }
+            else if (playerInSightRange && playerInAttackRange)
+            {
+                AttackPlayer();
+            }
 
-        if (playerInSightRange && playerInAttackRange) 
-        {
-            AttackPlayer(); // Attaquer le joueur s'il est dans la portée d'attaque
+            pathUpdateTimer = 0f; // Réinitialiser le minuteur
         }
     }
 
     private void AttackBase()
     {
-        // Le zombie retourne à la base (peut être un point spécifique de la carte)
-        // Agent devrait être configuré pour aller à la base
-        agent.SetDestination(new Vector3(421f, 0f, 406.5f)); // Remplacer par la position de la base
+        // Définit la destination vers la base
+        Vector3 basePosition = new Vector3(421f, 0f, 406.5f); // Position de la base
+        
+        // Vérifiez si la position de la base est atteignable
+        NavMeshPath path = new NavMeshPath();
+        if (NavMesh.CalculatePath(transform.position, basePosition, NavMesh.AllAreas, path) && path.status == NavMeshPathStatus.PathComplete)
+        {
+            agent.SetDestination(basePosition);
+        }
+        else
+        {
+            Debug.Log("La destination de la base est bloquée ou inaccessible.");
+        }
+
+        // Vérifie si le zombie est proche de la base
+        if (Vector3.Distance(transform.position, basePosition) <= agent.stoppingDistance)
+        {
+            if (!alreadyAttacked) // Empêche les dégâts trop fréquents
+            {
+                alreadyAttacked = true;
+                baseHealth.TakeDamage(baseDamage); // Inflige des dégâts à la base
+                Invoke(nameof(ResetAttack), timeBetweenAttacks); // Réinitialise l'attaque après un délai
+            }
+        }
     }
+
+
 
     private void ChasePlayer()
     {
-        // Le zombie poursuit le joueur
-        agent.SetDestination(player.position);
-        agent.speed = originalSpeed; // Rétablir la vitesse normale en poursuivant
+        if (Vector3.Distance(agent.destination, player.position) > 1f) // Met à jour seulement si nécessaire
+        {
+            agent.SetDestination(player.position);
+        }
+        agent.speed = originalSpeed;
     }
+
 
     private void FleePlayer()
     {
-        
-        // Le zombie fuit dans la direction opposée du joueur
         Vector3 directionAwayFromPlayer = transform.position - player.position;
         Vector3 fleeDestination = transform.position + directionAwayFromPlayer;
 
-        agent.SetDestination(fleeDestination); // Se déplacer dans la direction opposée du joueur
-        agent.speed = originalSpeed * 1.5f; // Augmenter la vitesse de fuite (1.5x la vitesse normale)
+        if (Vector3.Distance(agent.destination, fleeDestination) > 1f) // Met à jour seulement si nécessaire
+        {
+            agent.SetDestination(fleeDestination);
+        }
+        agent.speed = originalSpeed * 1.5f;
     }
+
 
     private void AttackPlayer()
     {
-        // Attaquer le joueur si dans la portée
         if (!alreadyAttacked)
         {
+            agent.SetDestination(transform.position); // Arrête le mouvement
             alreadyAttacked = true;
-            // Implémenter la logique d'attaque (par exemple, infliger des dégâts au joueur)
+
+            // Infliger des dégâts au joueur
             player.GetComponent<PlayerHealth>().TakeDamage(damage);
 
-            // Attendre avant de pouvoir attaquer à nouveau
+            // Réinitialiser l'attaque après un délai
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
+
 
     private void ResetAttack()
     {
