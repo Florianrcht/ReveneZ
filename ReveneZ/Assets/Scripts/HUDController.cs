@@ -14,6 +14,7 @@ public class HUDController : MonoBehaviour
 
     [SerializeField] TMP_Text interactionText;
     [SerializeField] TMP_Text progressionBar;
+    public int upgradesRemaining = 5;
 
     public void EnableInteractiontext(string text, int price)
     {
@@ -24,4 +25,10 @@ public class HUDController : MonoBehaviour
     {
         interactionText.gameObject.SetActive(false);
     } 
+
+    public void UpdateUpgradesRemaining(int newCount)
+    {
+        upgradesRemaining = newCount;
+        progressionBar.text = "Améliorations restantes : " + upgradesRemaining;
+    }
 }

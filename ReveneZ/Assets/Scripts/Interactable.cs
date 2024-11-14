@@ -36,6 +36,10 @@ public class Interactable : MonoBehaviour
                 LoadVictoryScene();
             }
             Debug.Log("Interaction réussie avec " + gameObject.name);
+            if (HUDController.instance != null)
+            {
+                HUDController.instance.UpdateUpgradesRemaining(HUDController.instance.upgradesRemaining - 1);
+            }
         }
         else
         {
