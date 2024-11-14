@@ -274,7 +274,7 @@ MonoBehaviour:
   speed: 5
   damage: 10
   agent: {fileID: 5865239885748500599}
-  player: {fileID: 7819233836052671071, guid: a07d0986000da4bb1befe0274895be4b, type: 3}
+  player: {fileID: 1292436928488518137, guid: b3176471872d74727ba5fa8b605de086, type: 3}
   timeBetweenAttacks: 5
   alreadyAttacked: 0
   sightRange: 50
@@ -282,7 +282,7 @@ MonoBehaviour:
   playerInSightRange: 0
   playerInAttackRange: 0
   updatePathInterval: 0.5
-  baseGO: {fileID: 0}
+  baseGO: {fileID: 6949596548854250530, guid: aca0df8d64ebc4dbc872479162f8debb, type: 3}
 --- !u!195 &5865239885748500599
 NavMeshAgent:
   m_ObjectHideFlags: 0

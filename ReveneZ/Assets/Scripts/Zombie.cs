@@ -7,7 +7,7 @@ public class Zombie : MonoBehaviour
     public float speed = 5f;
     public float damage = 10f;
 
-    public static int fear = 10;
+    public static int fear = -10;
 
     public NavMeshAgent agent;
     public Transform player;
@@ -267,6 +267,8 @@ public class Zombie : MonoBehaviour
         }
 
         // Placeholder pour la logique de drop (à adapter)
-        Debug.Log($"Zombie dropped {selectedRange} items");
+        int dropAmount = Random.Range(selectedRange - 9, selectedRange + 1);
+
+        player.GetComponent<PlayerEconomy>().AddMoney(dropAmount);
     }
 }
