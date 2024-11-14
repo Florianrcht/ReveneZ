@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -71,7 +72,7 @@ public class PlayerHealth : MonoBehaviour
 
         // Désactiver le personnage (peut être ajusté en fonction de votre jeu)
         gameObject.SetActive(false);
-
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         // Vous pouvez appeler ici d'autres méthodes pour gérer la mort (recharger le niveau, afficher un écran de défaite, etc.)
     }
 
