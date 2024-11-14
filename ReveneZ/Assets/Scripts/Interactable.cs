@@ -2,23 +2,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class Interactable : MonoBehaviour
 {
-    Outline outline;
+    private Outline outline;
     public string message;
+    public int price = 0;  
 
     public UnityEvent onInteraction;
+
+    private PlayerEconomy playerEconomy;  
 
     void Start()
     {
         outline = GetComponent<Outline>();
         DisableOutline();   
+        
+        playerEconomy = FindObjectOfType<PlayerEconomy>();
+        if (playerEconomy == null)
+        {
+            Debug.LogError("PlayerEconomy non trouvé dans la scène.");
+        }
     }
 
     public void Interact()
     {
-        onInteraction.Invoke();
+        if (playerEconomy != null && playerEconomy.SpendMoney(price))
+        {
+            onInteraction.Invoke();
+            if(price == 1500)
+            {
+                LoadVictoryScene();
+            }
+            Debug.Log("Interaction réussie avec " + gameObject.name);
+        }
+        else
+        {
+            Debug.Log("Pas assez d'argent pour interagir avec " + gameObject.name);
+        }
+    }
+    public void LoadVictoryScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 3);
     }
     
     public void DisableOutline()

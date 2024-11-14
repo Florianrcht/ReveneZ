@@ -15,9 +15,9 @@ public class HUDController : MonoBehaviour
     [SerializeField] TMP_Text interactionText;
     [SerializeField] TMP_Text progressionBar;
 
-    public void EnableInteractiontext(string text)
+    public void EnableInteractiontext(string text, int price)
     {
-        interactionText.text = text + " (F)"; 
+        interactionText.text = text +" "+ price + "$ (F)"; 
         interactionText.gameObject.SetActive(true);
     } 
     public void DisableInteractiontext()

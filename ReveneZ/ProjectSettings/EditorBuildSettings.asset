@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BaseDestroyedMenu.unity
     guid: d10f0658f5b8441f88ccdcfc904610ef
+  - enabled: 1
+    path: Assets/Scenes/VictoryMenu.unity
+    guid: b86fddfb4f1df4f178642af884347058
   m_configObjects: {}
