@@ -47,12 +47,9 @@ public class PlayerHealth : MonoBehaviour
     /// <summary>
     /// Soigne le personnage.
     /// </summary>
-    public void Heal(float amount)
+    public void Heal()
     {
-        if (isDead)
-            return;
-
-        currentHealth = Mathf.Min(currentHealth + amount, maxHealth); // Ne dépasse pas la vie max
+        currentHealth = maxHealth;
     }
 
     /// <summary>
@@ -62,17 +59,17 @@ public class PlayerHealth : MonoBehaviour
     {
         isDead = true;
         Debug.Log($"{gameObject.name} est mort.");
-
-        // Jouer un effet de mort, si disponible
         if (deathEffect != null)
         {
             Instantiate(deathEffect, transform.position, Quaternion.identity);
         }
 
-        // Désactiver le personnage (peut être ajusté en fonction de votre jeu)
+        // Désactiver le personnage
         gameObject.SetActive(false);
 
-        // Vous pouvez appeler ici d'autres méthodes pour gérer la mort (recharger le niveau, afficher un écran de défaite, etc.)
+        // Déclencher une fin de partie
+        FindObjectOfType<GameManager>().enabled = false;
+        Debug.Log("Game Over !");
     }
 
     /// <summary>

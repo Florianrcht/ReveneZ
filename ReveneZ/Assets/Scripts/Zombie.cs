@@ -4,37 +4,33 @@ using UnityEngine.AI;
 public class Zombie : MonoBehaviour
 {
     public float health = 50f;
-    public int fear = 0;  // La peur du zombie (en pourcentage)
     public float speed = 5f;
-    public float damage = 10f; // Définir la valeur des dégâts infligés par le zombie
+    public float damage = 10f;
+
+    public static int fear = 0;
 
     public NavMeshAgent agent;
     public Transform player;
 
-    // Vitesse originale pour la fuite
     private float originalSpeed;
 
-    // Attaque
     public float timeBetweenAttacks;
     public bool alreadyAttacked;
 
-    // States
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
     private void Awake()
     {
+        gameObject.tag = "Zombie"; // Ajout d'un tag
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
-
-        // Sauvegarder la vitesse originale du zombie
         originalSpeed = agent.speed;
     }
 
     private void Update()
     {
         // Vérification de la distance du joueur
-
         float distance = Vector3.Distance(transform.position, player.position);
 
         playerInSightRange = distance <= sightRange;
@@ -119,6 +115,40 @@ public class Zombie : MonoBehaviour
 
     private void Die()
     {
+        Drop();
         Destroy(gameObject);
+
+        // Informer le GameManager qu'un zombie est mort
+        FindObjectOfType<GameManager>().OnZombieKilled();
     }
+
+    private void Drop()
+    {
+        // Définir les probabilités des différentes tranches
+        int[] probabilities = { 40, 30, 20, 7, 3 }; // Probabilités pour les tranches
+        int[] ranges = { 10, 20, 30, 40, 50 }; // Maximum pour chaque tranche
+
+        int selectedRange = 0;
+        int cumulativeProbability = 0;
+        int randomValue = Random.Range(0, 100); // Random entre 0 et 99
+
+        // Déterminer la tranche
+        for (int i = 0; i < probabilities.Length; i++)
+        {
+            cumulativeProbability += probabilities[i];
+            if (randomValue < cumulativeProbability)
+            {
+                selectedRange = ranges[i];
+                break;
+            }
+        }
+
+        // Déterminer le montant dans la tranche
+        int dropAmount = Random.Range(selectedRange - 9, selectedRange + 1);
+
+        // Ajouter l'argent au joueur
+        player.GetComponent<PlayerEconomy>().AddMoney(dropAmount);
+    }
+    
+
 }
