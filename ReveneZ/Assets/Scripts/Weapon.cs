@@ -111,4 +111,19 @@ public class Weapon : MonoBehaviour
             transform.rotation = Quaternion.Euler(initialRotation); // Réinitialiser la rotation
         }
     }
+
+    public bool GetIsReloading()
+    {
+        return isReloading;
+    }
+
+    public int GetCurrentAmmo()
+    {
+        return currentAmmo;
+    }
+
+    public int GetMagazineSize()
+    {
+        return magazineSize;
+    }
 }
