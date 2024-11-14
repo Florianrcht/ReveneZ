@@ -16,6 +16,6 @@ public class DieMenu : MonoBehaviour
     }
     public void Quit()
     {
-        Application.Quit();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 2);
     }
 }
