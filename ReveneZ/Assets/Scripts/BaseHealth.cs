@@ -14,8 +14,7 @@ public class BaseHealth : MonoBehaviour
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
-        Debug.Log("Base a subi " + damage + " points de dégâts. Santé restante : " + currentHealth);
-
+        
         if (currentHealth <= 0)
         {
             currentHealth = 0;
@@ -27,12 +26,6 @@ public class BaseHealth : MonoBehaviour
     private void DestroyBase()
     {
         Debug.Log("La base a été détruite !");
-        
-        // Appel de la fonction dans GameManager pour gérer la fin de partie
-        //FindObjectOfType<GameManager>().OnBaseDestroyed();
-        
-        // Détruire l'objet de la base
-        Destroy(gameObject);  // Cette ligne détruit l'objet contenant le script BaseHealth
     }
 
 

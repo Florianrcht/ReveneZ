@@ -6,13 +6,11 @@ public class Zombie : MonoBehaviour
     public float health = 50f;
     public float speed = 5f;
     public float damage = 10f;
-    public float baseDamage = 10f; // Dégâts infligés à la base par le zombie
 
     public static int fear = -10;
 
     public NavMeshAgent agent;
     public Transform player;
-    public BaseHealth baseHealth; // Référence au script BaseHealth
 
     private float originalSpeed;
 
@@ -25,6 +23,7 @@ public class Zombie : MonoBehaviour
     public float updatePathInterval = 0.5f; // Temps entre les mises à jour des chemins
     private float pathUpdateTimer = 0f; // Minuteur pour les mises à jour
 
+    public BaseHealth baseGO;
 
     private void Awake()
     {
@@ -33,6 +32,7 @@ public class Zombie : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         originalSpeed = agent.speed;
         Debug.Log("Zombie fear" + fear);
+        baseGO = FindObjectOfType<BaseHealth>();
     }
 
     private void Update()
@@ -71,30 +71,93 @@ public class Zombie : MonoBehaviour
 
     private void AttackBase()
     {
-        // Définit la destination vers la base
-        Vector3 basePosition = new Vector3(421f, 0f, 406.5f); // Position de la base
-        
-        // Vérifiez si la position de la base est atteignable
-        NavMeshPath path = new NavMeshPath();
-        if (NavMesh.CalculatePath(transform.position, basePosition, NavMesh.AllAreas, path) && path.status == NavMeshPathStatus.PathComplete)
+        // Liste des positions "faces" de la base (2D, sans tenir compte de la hauteur)
+        Vector3[] basePositions = new Vector3[]
         {
-            agent.SetDestination(basePosition);
-        }
-        else
-        {
-            Debug.Log("La destination de la base est bloquée ou inaccessible.");
-        }
+            new Vector3(427.95f, 0f, 416.31f), // Bas 1
+            new Vector3(413.63f, 0f, 416.31f), // Bas 2
+            new Vector3(413.63f, 0f, 397.58f), // Bas 3
+            new Vector3(427.95f, 0f, 397.58f)  // Bas 4
+        };
 
-        // Vérifie si le zombie est proche de la base
-        if (Vector3.Distance(transform.position, basePosition) <= agent.stoppingDistance)
+        // Vérification si le zombie est à portée d'attaque du carré formé par les 4 coins
+        if (IsWithinAttackRange(basePositions))
         {
-            if (!alreadyAttacked) // Empêche les dégâts trop fréquents
+            // Si à portée d'attaque, infliger des dégâts à la base
+            if (!alreadyAttacked)
             {
                 alreadyAttacked = true;
-                baseHealth.TakeDamage(baseDamage); // Inflige des dégâts à la base
+                // Infliger des dégâts à la base via le composant BaseHealth
+                if (baseGO != null)
+                {
+                    baseGO.TakeDamage(damage); // Inflige des dégâts à la base
+                }
                 Invoke(nameof(ResetAttack), timeBetweenAttacks); // Réinitialise l'attaque après un délai
             }
         }
+        else
+        {
+            // Si pas encore à portée, se diriger vers la position la plus proche du carré
+            Vector3 closestBasePosition = GetClosestPositionOnBase(basePositions);
+            agent.SetDestination(closestBasePosition);
+        }
+    }
+
+    // Vérifie si le zombie est à portée de l'une des faces de la base (rectangle 2D)
+    private bool IsWithinAttackRange(Vector3[] basePositions)
+    {
+        // Calcule la distance minimale entre le zombie et les bords du carré (défini par les 4 coins)
+        for (int i = 0; i < basePositions.Length; i++)
+        {
+            Vector3 point1 = basePositions[i];
+            Vector3 point2 = basePositions[(i + 1) % basePositions.Length]; // Le prochain point, avec wrap-around
+
+            // Vérifie si la distance entre le zombie et le segment de ligne est inférieure à la portée d'attaque
+            if (DistanceToLineSegment(transform.position, point1, point2) <= attackRange)
+            {
+                return true; // Si à portée de l'un des bords
+            }
+        }
+        return false; // Si aucun des bords n'est dans la portée
+    }
+
+    // Calcule la distance entre un point et un segment de ligne (entre deux points)
+    private float DistanceToLineSegment(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
+    {
+        // Projette le point sur la ligne
+        Vector3 lineDirection = lineEnd - lineStart;
+        float lineLength = lineDirection.magnitude;
+        lineDirection.Normalize();
+        
+        // Trouver la projection du point sur le segment
+        float projection = Vector3.Dot(point - lineStart, lineDirection);
+        projection = Mathf.Clamp(projection, 0f, lineLength); // Clamping pour être dans la plage du segment
+
+        // Trouver la position projetée sur la ligne
+        Vector3 projectedPoint = lineStart + lineDirection * projection;
+        
+        // Retourner la distance entre le point projeté et le point initial
+        return Vector3.Distance(point, projectedPoint);
+    }
+
+    // Obtient la position la plus proche parmi les 4 coins de la base (2D)
+    private Vector3 GetClosestPositionOnBase(Vector3[] basePositions)
+    {
+        // Initialiser la distance minimale et la position de la face la plus proche
+        float minDistance = Mathf.Infinity;
+        Vector3 closestBasePosition = Vector3.zero;
+
+        // Trouver le coin le plus proche
+        foreach (var basePos in basePositions)
+        {
+            float distance = Vector3.Distance(transform.position, basePos);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestBasePosition = basePos;
+            }
+        }
+        return closestBasePosition;
     }
 
 
@@ -108,7 +171,6 @@ public class Zombie : MonoBehaviour
         agent.speed = originalSpeed;
     }
 
-
     private void FleePlayer()
     {
         Vector3 directionAwayFromPlayer = transform.position - player.position;
@@ -120,7 +182,6 @@ public class Zombie : MonoBehaviour
         }
         agent.speed = originalSpeed * 1.5f;
     }
-
 
     private void AttackPlayer()
     {
@@ -136,7 +197,6 @@ public class Zombie : MonoBehaviour
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
-
 
     private void ResetAttack()
     {
@@ -188,6 +248,4 @@ public class Zombie : MonoBehaviour
         // Ajouter l'argent au joueur
         player.GetComponent<PlayerEconomy>().AddMoney(dropAmount);
     }
-    
-
 }
