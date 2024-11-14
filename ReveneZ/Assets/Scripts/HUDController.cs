@@ -13,6 +13,7 @@ public class HUDController : MonoBehaviour
     }
 
     [SerializeField] TMP_Text interactionText;
+    [SerializeField] TMP_Text progressionBar;
 
     public void EnableInteractiontext(string text)
     {
