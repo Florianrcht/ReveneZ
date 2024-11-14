@@ -26,6 +26,8 @@ public class BaseHealth : MonoBehaviour
     private void DestroyBase()
     {
         Debug.Log("La base a été détruite !");
+        gameObject.SetActive(false);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
 
