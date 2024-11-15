@@ -7,12 +7,13 @@ public class Zombie : MonoBehaviour
     public float speed = 5f;
     public float damage = 10f;
 
-    public static int fear = -10;
+    public static int fear = 50;
 
     public NavMeshAgent agent;
     public Transform player;
 
     private float originalSpeed;
+    private float originalSightRange;
 
     public float timeBetweenAttacks;
     public bool alreadyAttacked;
@@ -35,6 +36,7 @@ public class Zombie : MonoBehaviour
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         originalSpeed = agent.speed;
+        originalSightRange = sightRange;
         Debug.Log("Zombie fear" + fear);
         baseGO = FindObjectOfType<BaseHealth>();
     }
@@ -111,6 +113,9 @@ public class Zombie : MonoBehaviour
 
     private void AttackBase()
     {
+        agent.speed = originalSpeed;
+        sightRange = originalSightRange;
+
         // Vérification si le zombie est à portée d'attaque du carré formé par les 4 coins
         Vector3[] basePositions = new Vector3[]
         {
@@ -194,6 +199,9 @@ public class Zombie : MonoBehaviour
 
     private void ChasePlayer()
     {
+        sightRange = originalSightRange;
+        agent.speed = originalSpeed;
+
         if (Vector3.Distance(agent.destination, player.position) > 1f)
         {
             agent.SetDestination(player.position);
@@ -203,6 +211,10 @@ public class Zombie : MonoBehaviour
 
     private void FleePlayer()
     {
+        agent.speed = originalSpeed + 10f;
+        sightRange = 70f;
+
+
         Vector3 directionAwayFromPlayer = transform.position - player.position;
         Vector3 fleeDestination = transform.position + directionAwayFromPlayer;
 
@@ -210,11 +222,13 @@ public class Zombie : MonoBehaviour
         {
             agent.SetDestination(fleeDestination);
         }
-        agent.speed = originalSpeed * 1.5f;
     }
 
     private void AttackPlayer()
     {
+        agent.speed = originalSpeed;
+        sightRange = originalSightRange;
+
         if (!alreadyAttacked)
         {
             agent.SetDestination(transform.position);
