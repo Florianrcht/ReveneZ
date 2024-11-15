@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class HUDController : MonoBehaviour
 {
@@ -13,8 +14,10 @@ public class HUDController : MonoBehaviour
     }
 
     [SerializeField] TMP_Text interactionText;
-    [SerializeField] TMP_Text progressionBar;
-    public int upgradesRemaining = 5;
+    [SerializeField] TMP_Text progressionText;
+    [SerializeField] Slider progressionBar;
+
+    private int upgradesDone = 0;
 
     public void EnableInteractiontext(string text, int price)
     {
@@ -26,9 +29,11 @@ public class HUDController : MonoBehaviour
         interactionText.gameObject.SetActive(false);
     } 
 
-    public void UpdateUpgradesRemaining(int newCount)
+    public void UpdateUpgradesRemaining()
     {
-        upgradesRemaining = newCount;
-        progressionBar.text = "Améliorations restantes : " + upgradesRemaining;
+        Debug.Log("ici");
+        upgradesDone++;
+        progressionBar.value = upgradesDone;
+        progressionText.text = upgradesDone + "/5";
     }
 }

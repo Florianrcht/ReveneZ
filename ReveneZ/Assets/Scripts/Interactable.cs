@@ -38,7 +38,7 @@ public class Interactable : MonoBehaviour
             Debug.Log("Interaction réussie avec " + gameObject.name);
             if (HUDController.instance != null)
             {
-                HUDController.instance.UpdateUpgradesRemaining(HUDController.instance.upgradesRemaining - 1);
+                HUDController.instance.UpdateUpgradesRemaining();
             }
         }
         else
