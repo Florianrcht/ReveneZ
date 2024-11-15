@@ -74,6 +74,7 @@ public class Zombie : MonoBehaviour
             }
             else if (playerInSightRange && !playerInAttackRange)
             {
+                animator.SetBool("isRunning", true);
                 if (fear > 50)
                 {
                     FleePlayer();
@@ -138,7 +139,6 @@ public class Zombie : MonoBehaviour
                 {
                     animator.Play("Z_Attack", -1, 0f);
                     baseGO.TakeDamage(damage);
-                    Invoke(nameof(StopAttackAnimation), 1f); 
                 }
                 Invoke(nameof(ResetAttack), timeBetweenAttacks);
             }
@@ -231,6 +231,7 @@ public class Zombie : MonoBehaviour
 
     private void AttackPlayer()
     {
+        animator.Play("Z_Idle", -1, 0f);
         agent.speed = originalSpeed;
         sightRange = originalSightRange;
 
@@ -241,7 +242,6 @@ public class Zombie : MonoBehaviour
             animator.Play("Z_Attack", -1, 0f);
             player.GetComponent<PlayerHealth>().TakeDamage(damage);
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
-            Invoke(nameof(StopAttackAnimation), 1f); 
         }
     }
 
@@ -297,8 +297,5 @@ public class Zombie : MonoBehaviour
         player.GetComponent<PlayerEconomy>().AddMoney(dropAmount);
     }
 
-    private void StopAttackAnimation()
-    {
-        animator.SetBool("isAttack", false);
-    }
+
 }
