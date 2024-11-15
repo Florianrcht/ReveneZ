@@ -20,6 +20,15 @@ public class WeaponSwitching : MonoBehaviour
         SelectWeapon();
     }
 
+    public void SwitchWeaponWithIndex(int index)
+    {
+        if (transform.childCount <= 0) return;
+
+        // Cycler entre les armes
+        selectedWeaponIndex = index;
+        SelectWeapon();
+    }
+
     private void SelectWeapon()
     {
         int index = 0;

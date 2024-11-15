@@ -69,6 +69,15 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
+    public void SwitchWithNumber(int index)
+    {
+        WeaponSwitching weaponSwitching = GetComponentInChildren<WeaponSwitching>();
+        if (weaponSwitching != null)
+        {
+            weaponSwitching.SwitchWeaponWithIndex(index);
+        }
+    }
+
     public bool GetIsReloading()
     {
         return currentWeapon.GetIsReloading();
