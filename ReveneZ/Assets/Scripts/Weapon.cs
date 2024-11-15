@@ -15,6 +15,10 @@ public class Weapon : MonoBehaviour
     public bool isReloading = false; // Indique si l'arme est en train de recharger
     public bool isMelee = false;
 
+    [Header("Audio")]
+    public AudioSource audioSource; // La source audio pour jouer les sons
+    public AudioClip shootSound; 
+
     private int currentAmmo; // Nombre de balles restantes dans le chargeur
     private float nextTimeToFire = 0f; // Temps avant le prochain tir
 
@@ -57,9 +61,15 @@ public class Weapon : MonoBehaviour
         {
             nextTimeToFire = Time.time + 1f / fireRate;
 
-            if(!isMelee) currentAmmo--; // Consomme une balle
+            if (!isMelee) currentAmmo--; // Consomme une balle
 
             if (muzzleFlash != null) muzzleFlash.Play();
+
+            // Joue le son du tir
+            if (audioSource != null && shootSound != null)
+            {
+                audioSource.PlayOneShot(shootSound);
+            }
 
             RaycastHit hit;
             if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, range))

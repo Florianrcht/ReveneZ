@@ -14,6 +14,10 @@ public class GameManager : MonoBehaviour
     private bool isWaitingForNextWave = false; // Protection contre le lancement multiple de la coroutine
     private int fearIncreasePerWave = 10; // Augmentation de la peur globale par vague
 
+    [Header("Background Music")]
+    public AudioSource audioSource; // La source audio pour jouer la musique
+    public AudioClip backgroundMusic; // La musique de fond
+
     [Header("Spawn Points")]
     public Vector3[] spawnPoints; // Coordonnées de spawn des zombies
 
@@ -25,7 +29,21 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // Initialisation de la manche
         StartNewWave();
+
+        // Démarrage de la musique de fond
+        PlayBackgroundMusic();
+    }
+
+    private void PlayBackgroundMusic()
+    {
+        if (audioSource != null && backgroundMusic != null)
+        {
+            audioSource.clip = backgroundMusic;
+            audioSource.loop = true; // S'assurer que la musique se répète
+            audioSource.Play();
+        }
     }
 
     /// <summary>

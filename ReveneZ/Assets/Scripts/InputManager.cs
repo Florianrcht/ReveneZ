@@ -45,6 +45,10 @@ public class InputManager : MonoBehaviour
 
         onFoot.SwitchWeapons.performed += ctx => weaponManager.Switch();
 
+        onFoot.ChooseWeapon1.performed += ctx => weaponManager.SwitchWithNumber(0);
+        onFoot.ChooseWeapon2.performed += ctx => weaponManager.SwitchWithNumber(1);
+        onFoot.ChooseWeapon3.performed += ctx => weaponManager.SwitchWithNumber(2);
+
     }
 
 
