@@ -96,18 +96,18 @@ public class Weapon : MonoBehaviour
         isReloading = true;
 
         // Enregistrer la rotation initiale de l'arme
-        initialRotation = transform.rotation.eulerAngles;
+        initialRotation = transform.localRotation.eulerAngles;
 
         // Effectuer une rotation de l'arme pendant le rechargement
         float startTime = Time.time;
         while (Time.time < startTime + reloadTime)
         {
-            transform.Rotate(0f, 0f, -reloadRotationSpeed * Time.deltaTime / reloadTime);
+            transform.Rotate(0f, 0f, -reloadRotationSpeed * Time.deltaTime / reloadTime, Space.Self);
             yield return null;
         }
 
         // Remet l'arme à sa position initiale après le rechargement
-        transform.Rotate(0f, 0f, reloadRotationSpeed);
+        transform.localRotation = Quaternion.Euler(initialRotation); // Réinitialiser la rotation
         currentAmmo = magazineSize; // Remet à jour le chargeur
         isReloading = false;
     }
@@ -118,7 +118,7 @@ public class Weapon : MonoBehaviour
         {
             StopCoroutine(Reload());
             isReloading = false;
-            transform.rotation = Quaternion.Euler(initialRotation); // Réinitialiser la rotation
+            transform.localRotation = Quaternion.Euler(initialRotation); // Réinitialiser la rotation
         }
     }
 
