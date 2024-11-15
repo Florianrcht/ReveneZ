@@ -68,4 +68,19 @@ public class WeaponManager : MonoBehaviour
             weaponSwitching.SwitchWeapon();
         }
     }
+
+    public bool GetIsReloading()
+    {
+        return currentWeapon.GetIsReloading();
+    }
+
+    public int GetCurrentAmmo()
+    {
+        return currentWeapon.GetCurrentAmmo();
+    }
+
+    public int GetMagazineSize()
+    {
+        return currentWeapon.GetMagazineSize();
+    }
 }

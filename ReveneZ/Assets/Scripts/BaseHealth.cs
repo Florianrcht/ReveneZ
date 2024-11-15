@@ -11,6 +11,11 @@ public class BaseHealth : MonoBehaviour
         currentHealth = maxHealth;
     }
 
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
     // Fonction pour infliger des dégâts à la base
     public void TakeDamage(float damage)
     {

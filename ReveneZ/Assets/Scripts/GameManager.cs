@@ -28,26 +28,6 @@ public class GameManager : MonoBehaviour
         StartNewWave();
     }
 
-    private void Update()
-    {
-        // Vérifie si tous les zombies sont éliminés et prépare la manche suivante
-        if (zombiesRemaining <= 0 && isWaveActive && !isWaitingForNextWave)
-        {
-            isWaveActive = false; // Fin de la vague
-            StartCoroutine(StartNextWaveAfterDelay());
-        }
-    }
-
-    public bool GetIsWaveActive()
-    {
-        return isWaveActive;
-    }
-
-    public int GetZombiesRemaining()
-    {
-        return zombiesRemaining;
-    }
-
     /// <summary>
     /// Démarre une nouvelle manche.
     /// </summary>
@@ -131,5 +111,50 @@ public class GameManager : MonoBehaviour
     public void OnZombieKilled()
     {
         zombiesRemaining--;
+    }
+
+    private void Update()
+    {
+        // Vérifie si tous les zombies sont éliminés et prépare la manche suivante
+        if (zombiesRemaining <= 0 && isWaveActive && !isWaitingForNextWave)
+        {
+            isWaveActive = false; // Fin de la vague
+            StartCoroutine(StartNextWaveAfterDelay());
+        }
+    }
+
+    public bool GetIsWaveActive()
+    {
+        return isWaveActive;
+    }
+
+    public int GetWaveCounter()
+    {
+        return waveCounter;
+    }
+
+    public int GetZombiesRemaining()
+    {
+        return zombiesRemaining;
+    }
+
+    public int GetZombiesPerWave()
+    {
+        return zombiesPerWave;
+    }
+
+    public float GetTimeBetweenWaves()
+    {
+        return timeBetweenWaves;
+    }
+
+    public float GetZombieStatMultiplier()
+    {
+        return zombieStatMultiplier;
+    }
+
+    public float GetMoneyMultiplier()
+    {
+        return moneyMultiplier;
     }
 }
