@@ -16,6 +16,7 @@ public class HUDController : MonoBehaviour
 
     [Header("UI Settings")]
     [SerializeField] TMP_Text interactionText;
+    [SerializeField] GameObject crosshair;
     [SerializeField] TMP_Text progressionBar;
     [SerializeField] Slider PlayerHealthBar;
     [SerializeField] TMP_Text MoneyText;
@@ -128,11 +129,13 @@ public class HUDController : MonoBehaviour
 
     public void EnableInteractiontext(string text)
     {
+        crosshair.SetActive(false);
         interactionText.text = text + " (F)"; 
         interactionText.gameObject.SetActive(true);
     } 
     public void DisableInteractiontext()
     {
+        crosshair.SetActive(true);
         interactionText.gameObject.SetActive(false);
     } 
 }

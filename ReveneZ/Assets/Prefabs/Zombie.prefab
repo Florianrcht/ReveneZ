@@ -275,7 +275,7 @@ MonoBehaviour:
   damage: 10
   agent: {fileID: 5865239885748500599}
   player: {fileID: 1292436928488518137, guid: b3176471872d74727ba5fa8b605de086, type: 3}
-  timeBetweenAttacks: 5
+  timeBetweenAttacks: 3
   alreadyAttacked: 0
   sightRange: 50
   attackRange: 2
