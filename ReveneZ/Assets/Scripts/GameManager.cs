@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public float timeBetweenWaves = 120f; // Temps entre deux manches
     private bool isWaveActive = false; // Indique si une manche est en cours
     private bool isWaitingForNextWave = false; // Protection contre le lancement multiple de la coroutine
-    private int fearIncreasePerWave = 10; // Augmentation de la peur globale par vague
+    private int fearIncreasePerWave = 25; // Augmentation de la peur globale par vague
 
     [Header("Background Music")]
     public AudioSource audioSource; // La source audio pour jouer la musique

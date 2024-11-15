@@ -7,7 +7,7 @@ public class Zombie : MonoBehaviour
     public float speed = 5f;
     public float damage = 10f;
 
-    public static int fear = 60;
+    public static int fear = 0;
 
     public NavMeshAgent agent;
     public Transform player;
