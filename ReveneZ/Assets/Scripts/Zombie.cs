@@ -7,7 +7,7 @@ public class Zombie : MonoBehaviour
     public float speed = 5f;
     public float damage = 10f;
 
-    public static int fear = 50;
+    public static int fear = 0;
 
     public NavMeshAgent agent;
     public Transform player;
@@ -30,6 +30,8 @@ public class Zombie : MonoBehaviour
     private Vector3 closestBasePosition; // Nouvelle variable pour stocker la position la plus proche
     private bool pathToBaseHasBeenSet = false;
 
+    private Animator animator;
+
     private void Awake()
     {
         gameObject.tag = "Zombie"; // Ajout d'un tag
@@ -39,6 +41,7 @@ public class Zombie : MonoBehaviour
         originalSightRange = sightRange;
         Debug.Log("Zombie fear" + fear);
         baseGO = FindObjectOfType<BaseHealth>();
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -133,7 +136,9 @@ public class Zombie : MonoBehaviour
                 alreadyAttacked = true;
                 if (baseGO != null)
                 {
+                    animator.Play("Z_Attack", -1, 0f);
                     baseGO.TakeDamage(damage);
+                    Invoke(nameof(StopAttackAnimation), 1f); 
                 }
                 Invoke(nameof(ResetAttack), timeBetweenAttacks);
             }
@@ -233,9 +238,10 @@ public class Zombie : MonoBehaviour
         {
             agent.SetDestination(transform.position);
             alreadyAttacked = true;
-
+            animator.Play("Z_Attack", -1, 0f);
             player.GetComponent<PlayerHealth>().TakeDamage(damage);
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
+            Invoke(nameof(StopAttackAnimation), 1f); 
         }
     }
 
@@ -255,8 +261,13 @@ public class Zombie : MonoBehaviour
 
     private void Die()
     {
+        animator.Play("Z_FallingBack", -1, 0f);
+        agent.speed = -999;
+        sightRange = -999;
+        health = 9999;
+
         Drop();
-        Destroy(gameObject);
+        Destroy(gameObject, 0.5f);
 
         FindObjectOfType<GameManager>().OnZombieKilled();
     }
@@ -284,5 +295,10 @@ public class Zombie : MonoBehaviour
         int dropAmount = Random.Range(selectedRange - 9, selectedRange + 1);
 
         player.GetComponent<PlayerEconomy>().AddMoney(dropAmount);
+    }
+
+    private void StopAttackAnimation()
+    {
+        animator.SetBool("isAttack", false);
     }
 }
